@@ -10,23 +10,18 @@ angular.module('myApp.home', ['ngRoute', 'firebase'])
 
 .controller('HomeCtrl', [
   '$scope',
-  '$firebaseSimpleLogin',
+  '$location',
+  'CommonProp',
+  '$firebaseAuth',
   function (
     $scope,
-    $firebaseSimpleLogin
+    $location,
+    CommonProp,
+    $firebaseAuth
   ) {
     var
-      firebaseObj = new Firebase('https://blistering-inferno-8085.firebaseio.com');
-      // loginObj = $firebaseSimpleLogin(firebaseObj);
-
-    function authHandler(error, authData) {
-      if (error) {
-        console.log("Login Failed!", error);
-      } else {
-        console.log("Authenticated successfully with payload:", authData);
-      }
-    }
-
+      firebaseObj = new Firebase('https://blistering-inferno-8085.firebaseio.com'),
+      loginObj = $firebaseAuth(firebaseObj);
 
     $scope.user = {};
     $scope.SignIn = function(e) {
@@ -35,19 +30,32 @@ angular.module('myApp.home', ['ngRoute', 'firebase'])
         password = $scope.user.password;
 
       e.preventDefault();
-      firebaseObj.authWithPassword({
-        email    : username,
-        password : password
-      }, authHandler);
 
-      // loginObj.$login('password', {
-      //   email: username,
-      //   password: password
-      // });
-      // .then(function authDataCallback (user) {
-      //   console.log('Auth success');
-      // }, function(error) {
-      //   console.log('Auth failure');
-      // });
+      loginObj
+        .$authWithPassword({
+          email: username,
+          password: password
+        })
+        .then(function(user) {
+          console.log('Auth success', user);
+          $location.path('/welcome');
+          CommonProp.setUser(user.password.email);
+        }, function(error) {
+          console.log('Auth failure', error);
+        });
     };
-}]);
+}])
+
+.service('CommonProp', function(){
+  var user = '';
+
+  return {
+    getUser: function(){
+      return user;
+    },
+
+    setUser: function(value){
+      user = value;
+    }
+  };
+});
