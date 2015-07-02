@@ -13,7 +13,7 @@
         <div class="container">
             <nav class="blog-nav">
                 <a class="blog-nav-item active" href="#">Home</a>
-                <a class="blog-nav-item " href="addPost.html">Add Post</a>
+                <a class="blog-nav-item " href="#/addPost">Add Post</a>
             </nav>
         </div>
     </div>
@@ -22,6 +22,12 @@
             <h1>AngularJS & Firebase App</h1>
         </div>
         <p class="lead">Welcome home <strong>{{username}}</strong> !!!</p>
+        <div class="list-group" ng-repeat="article in articles">
+          <a href="#" class="list-group-item active">
+            <h4 class="list-group-item-heading">{{article.title}}</h4>
+            <p class="list-group-item-text">{{article.post}}</p>
+          </a>
+        </div>
     </div>
     <footer class="footer">
         <div class="container">

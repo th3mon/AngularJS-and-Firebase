@@ -11,11 +11,18 @@ angular.module('myApp.welcome', ['ngRoute'])
 
 .controller('WelcomeCtrl', [
   '$scope',
+  '$firebase',
   'CommonProp',
   function(
     $scope,
+    $firebase,
     CommonProp
   ) {
+    var
+      firebaseObj = new Firebase('https://blistering-inferno-8085.firebaseio.com/Articles'),
+      sync = $firebase(firebaseObj);
+
+    $scope.articles = sync.$asArray();
     $scope.username = CommonProp.getUser();
   }
 ]);
