@@ -23,22 +23,31 @@ angular.module('myApp.addPost', ['ngRoute'])
     ){
       var
         firebaseObj = new Firebase('https://blistering-inferno-8085.firebaseio.com/Articles'),
-        fb = $firebase(firebaseObj);
+        fb = $firebase(firebaseObj),
+        addPost = {};
+
+      $scope.addPost = addPost;
 
       $scope.AddPost = function() {
         var
           title = $scope.article.title,
-          post = $scope.article.post;
+          post = $scope.article.post,
+          user = CommonProp.getUser();
+
+        addPost.loading = true;
 
         fb.$push({
           title: title,
           post: post,
-          emailId: CommonProp.getUser()
+          emailId: user,
+          '.priority': user
         }).then(function(ref) {
           $location.path('/welcome');
           console.log(ref);
+          addPost.loading = false;
         }, function(error) {
           console.log('Error:', error);
+          addPost.loading = false;
         });
       };
     }
